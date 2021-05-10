@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utile.c                                            :+:      :+:    :+:   */
+/*   print_flags.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sbouzidi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,59 +12,61 @@
 
 #include "ft_printf.h"
 
-int	ft_strlenp(const char *s)
+void	print_precision(t_struct *list, char *conv)
 {
 	int	i;
+	int	s;
 
 	i = 0;
-	while (s[i] != '\0')
-		i++;
-	return (i);
-}
-
-char	*ft_strrchrp(const char *s, char c)
-{
-	int		i;
-	char	*str;
-
-	str = (char *) s;
-	i = ft_strlen(str);
-	while (i >= 0)
-	{
-		if (str[i] == c)
-		{	
-			return (str + i);
+	s = list->precisionlen - ft_strlen(conv);
+	if (s < 0)
+		s = 0;
+	if (list->precisionlen > 0)
+		{
+			while (i < s)
+			{
+				list->nprinted += write(1, "0", 1);
+				i++;
+			}	
 		}
-		i--;
-	}
-	if (s[i] == '\0' && c == '\0')
-		return (str + i);
-	return (NULL);
 }
 
-void	ft_print_fd(char *conv, int size, t_struct *list)
+void	print_width(t_struct *list, char *conv, int neg)
 {
-	int i;
+	int	i;
+	int	prec;
+	int	s1;
 
 	i = 0;
-
-	while (conv[i] && i <= size)
+	prec = list->precisionlen - ft_strlen(conv);
+	if (prec < 0)
+		prec = 0;
+	s1 = list->width - ft_strlen(conv) - prec - neg;
+	while (i < s1)
 	{
-		list->nprinted += write(1, &conv[i], 1);
+		if(list->zero > 0 && list->precision == 0)
+			list->nprinted += write(1, "0", 1);
+		else
+			list->nprinted += write(1, " ", 1);
 		i++;
 	}
 }
 
+void	print_hexa(t_struct *list, char c)
+{
 
-
-
-
-
-
-
-
-
-
+	if (list->diez > 0)
+	{
+		if (c == 'x')
+		{
+			ft_print_fd("0x", 2, list);
+		}
+		else if (c == 'X')
+		{
+			ft_print_fd("0X", 2, list);
+		}
+	}
+}
 
 
 

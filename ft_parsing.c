@@ -43,22 +43,38 @@ int	parse_indicateur(char c, t_struct *list)
 	if (c == '-' && !check_empty(list))
 		list->moins++;
 	else if (c == '-' && check_empty(list))  
-		return (-1);
+		return (0);
 	if (c == '+' && !check_empty(list) && list->space == 0)
 		list->plus++;
 	else if (c == '+' && check_empty(list) && list->space > 0)
-		return (-1);
+		return (0);
 	if (c == ' ' && !check_empty(list) && list->plus == 0)
 		list->space++;
 	else if (c == ' ' && check_empty(list) && list->plus > 0)
-		return (-1);
-	return (0);
+		return (0);
+	if (c == '#' && !check_empty(list) && list->space == 0)
+	       	list->diez++;	
+	else if(c == '#' && check_empty(list) && list->space > 0)
+		return (0);
+
+	return (1);
 }
 
-void	parse_flags(char c, t_struct *list)
+void	parse_convert(char c, t_struct *list, va_list ap)
 {
-	if (c == '#')
-		list->diez++;
-	else if (c == '*')
-		list->star++;
+	if (c == 'c')
+		conv_char(ap, list);
+	else if (c == 's')
+		conv_str(ap, list);
+	else if (c == 'p')
+		conv_point(ap, list);
+	else if (c == 'd' || c == 'i')
+		conv_int(ap, list);
+//	else if (c == 'u')
+//		conv_unint(ap, list);
+	else if (c == 'x' || c == 'X')
+		conv_hexa(ap, list, &c);
+//	else if (c == '%')
+//		ft_putchar_fd('%', 1);
+//		list->nprinted++;
 }

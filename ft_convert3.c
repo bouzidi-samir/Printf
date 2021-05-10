@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utile.c                                            :+:      :+:    :+:   */
+/*   ft_convert3.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sbouzidi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,59 +12,53 @@
 
 #include "ft_printf.h"
 
-int	ft_strlenp(const char *s)
+char	*ft_strtoupper(char *str)
 {
 	int	i;
 
 	i = 0;
-	while (s[i] != '\0')
-		i++;
-	return (i);
-}
-
-char	*ft_strrchrp(const char *s, char c)
-{
-	int		i;
-	char	*str;
-
-	str = (char *) s;
-	i = ft_strlen(str);
-	while (i >= 0)
+	while (str[i] != 0)
 	{
-		if (str[i] == c)
-		{	
-			return (str + i);
-		}
-		i--;
-	}
-	if (s[i] == '\0' && c == '\0')
-		return (str + i);
-	return (NULL);
-}
-
-void	ft_print_fd(char *conv, int size, t_struct *list)
-{
-	int i;
-
-	i = 0;
-
-	while (conv[i] && i <= size)
-	{
-		list->nprinted += write(1, &conv[i], 1);
+		str[i] = ft_toupper(str[i]);
 		i++;
 	}
+	return (str);
 }
 
+/*void	conv_unint(va_list ap, t_struct *list)
+{
+	unsigned long long	arg;
+	char	*conv;
 
+	conv = NULL;
+	arg = va_arg(ap, unsigned int);
+	conv = ft_u_itoa(arg);
+	list->nprinted += ft_strlen(conv);
+	ft_putstr_fd(conv, 1);
+}*/
 
-
-
-
-
-
-
-
-
+void	conv_hexa(va_list ap, t_struct *list, char *c)
+{
+	unsigned long long	arg;
+	char	*conv;
+	int	neg;
+	int size;
+	
+	neg = 0;
+	arg = va_arg (ap, unsigned int);
+	if (arg == 0)
+		conv = ft_strdup("0");
+	else
+		conv = ft_hexad(arg);
+	if (*c == 'x')
+		conv = ft_strtolower(conv);
+	else
+		conv = ft_strtoupper(conv);
+	size = ft_strlen(conv);
+	print_hexa(list, *c);
+	ft_print_fd(conv, size, list);
+	free(conv);
+}
 
 
 

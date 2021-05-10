@@ -21,7 +21,7 @@
 
 typedef struct s_struct
 {
-	char		*str;
+	int		*str;
 	int		nprinted;
 	int		zero;
 	int		moins;
@@ -43,11 +43,20 @@ int	parse_width(char c, t_struct *list);
 void	parse_convert(char c, t_struct *list, va_list ap);
 void	conv_char(va_list ap, t_struct *list);
 void	conv_point(va_list ap, t_struct *list);
-void	conv_int(va_list ap, t_struct *list);
+int	    conv_int(va_list ap, t_struct *list);
+void	conv_unint(va_list ap, t_struct *list);
+void	conv_hexa(va_list ap, t_struct *list, char *c);
 void	conv_str(va_list ap, t_struct *list);
+void	print_sign(t_struct *list, int arg);
+void	print_precision(t_struct *list, char *conv);
+void	print_width(t_struct *list, char *conv, int n);
+void	print_hexa(t_struct *list, char c);
+void	ft_print_fd(char *conv, int size, t_struct *list);
 void	ft_putstr_fd(char *s, int fd);
 char	*ft_strrchrp(const char *s, char c);
 char	*ft_itoa(int n);
+char	*ft_hexad(unsigned long long nb);
+char	*ft_strtolower(char *str);
 int	ft_strlenp(const char *s); 
 
 #endif

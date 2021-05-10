@@ -11,46 +11,66 @@
 /* ************************************************************************** */
 
 #include "ft_printf.h"
-
-void	parse_convert(char c, t_struct *list, va_list ap)
-{
-	if (c == 'c')
-		conv_char(ap, list);
-	else if (c == 's')
-		conv_str(ap, list);
-	else if (c == 'p')
-		conv_point(ap, list);
-	else if (c == 'd')
-		conv_int(ap, list);
-
-}
-
+#include "limits.h"
 void	conv_char(va_list ap, t_struct *list)
 {
 	char arg;
 
 	arg = va_arg(ap, int);
-	write(1, &arg, 1);
-	list->nprinted++;
+	list->nprinted += write(1, &arg, 1);
 }
 
-void	conv_int(va_list ap, t_struct *list)
+int	conv_int(va_list ap, t_struct *list)
 {
 	int	arg;
-	char *conv;
-
+	char	*conv;
+	int size;
+	int neg;
+	
+	neg = 0;
 	conv = NULL;
 	arg = va_arg(ap, int);
+	if (arg == 0 && list->precision > 0 && list->precisionlen == 0)
+		return (-1);
+//	if (arg > UINT_MAX)	
+//	{
+		//arg *= -1;
+		//neg = 1;
+		//list->nprinted += write(1, "-", 1);
+//	}
+	if ((int)arg < 0)
+	{
+		neg = 1;
+		arg *= -1;
+//		list->nprinted += write(1, "-", 1);
+	}
 	conv = ft_itoa(arg);
-	list->nprinted += ft_strlen(conv);
-	ft_putstr_fd(conv, 1);
+	size = ft_strlen(conv);
+	if(list->moins > 0)
+	{
+		if (neg == 1)
+	    	list->nprinted += write(1, "-", 1);
+		print_precision(list, conv);
+		ft_print_fd(conv, size, list);
+		print_width(list, conv, neg);
+	}
+	else if (list->moins == 0)
+	{
+	 	print_width(list, conv, neg);   
+	    if (neg == 1)
+	    	list->nprinted += write(1, "-", 1);
+		print_precision(list, conv);
+		ft_print_fd(conv, size, list);		
+	}
+free(conv);
+		return (1);
 }
 
 void	conv_str(va_list ap, t_struct *list)
 {
 	char	*arg;
-	
+	int     size;
 	arg = va_arg(ap, char*);
-	list->nprinted += ft_strlen(arg);
-	ft_putstr_fd(arg, 1);
+	size = ft_strlen(arg);
+	ft_print_fd(arg, size, list);
 }
